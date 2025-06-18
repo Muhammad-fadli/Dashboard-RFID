@@ -111,13 +111,19 @@
     }
 
     async function kirimKeluar() {
+      const rfid = document.getElementById("uidKeluar").value;
       const body = new URLSearchParams({
         action: 'keluar',
-        rfid: document.getElementById("uidKeluar").value,
+        rfid: rfid,
         qty: document.getElementById("qtyKeluar").value
       });
+
       await fetch(scriptURL, { method: "POST", body });
-      alert("Barang keluar berhasil disimpan");
+
+      // SET LED_OFF otomatis
+      await fetch(`${scriptURL}?action=setoff&rfid=${rfid}`);
+
+      alert("Barang keluar berhasil disimpan dan LED dimatikan.");
       location.reload();
     }
 
@@ -125,6 +131,20 @@
       const uid = document.getElementById("uidSimulasi").value;
       if (uid) handleScan(uid);
     }
+
+    // Ambil UID dari URL dan langsung scan
+    function getURLParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    window.onload = function() {
+      const uidFromURL = getURLParameter("uid");
+      if (uidFromURL) {
+        document.getElementById("uidSimulasi").value = uidFromURL;
+        simulateScan();
+      }
+    };
   </script>
 </body>
 </html>
