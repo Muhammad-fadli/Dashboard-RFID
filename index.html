@@ -9,6 +9,29 @@
     .form-section { border: 1px solid #ccc; padding: 15px; margin-top: 20px; }
     #searchResult div { margin-bottom: 15px; }
   </style>
+
+  <!-- Firebase App (modular SDK) -->
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJUyQ2qGK6gYApgx4hgR9B3QZPfaqqubA",
+      authDomain: "rfid-dashboard-c571d.firebaseapp.com",
+      databaseURL: "https://rfid-dashboard-c571d-default-rtdb.firebaseio.com",
+      projectId: "rfid-dashboard-c571d",
+      storageBucket: "rfid-dashboard-c571d.firebasestorage.app",
+      messagingSenderId: "405191477535",
+      appId: "1:405191477535:web:c5dc436461fa9a246b482a",
+      measurementId: "G-W9ZKL0Y6KX"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </head>
 <body>
   <h1>Dashboard Inventaris Rak</h1>
