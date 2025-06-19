@@ -10,27 +10,42 @@
     #searchResult div { margin-bottom: 15px; }
   </style>
 
-  <!-- Firebase App (modular SDK) -->
-  <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
-
-    // Your Firebase configuration
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    // Firebase Config Anda
     const firebaseConfig = {
       apiKey: "AIzaSyCJUyQ2qGK6gYApgx4hgR9B3QZPfaqqubA",
       authDomain: "rfid-dashboard-c571d.firebaseapp.com",
       databaseURL: "https://rfid-dashboard-c571d-default-rtdb.firebaseio.com",
       projectId: "rfid-dashboard-c571d",
-      storageBucket: "rfid-dashboard-c571d.firebasestorage.app",
+      storageBucket: "rfid-dashboard-c571d.appspot.com",
       messagingSenderId: "405191477535",
       appId: "1:405191477535:web:c5dc436461fa9a246b482a",
       measurementId: "G-W9ZKL0Y6KX"
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let lastUID = "";
+
+    // Listener Firebase untuk UID terbaru
+    function listenToUID() {
+      db.ref("last_uid").on("value", (snapshot) => {
+        const newUID = snapshot.val();
+        if (newUID && newUID !== lastUID) {
+          lastUID = newUID;
+          console.log("📡 UID baru dari Firebase:", newUID);
+          handleScan(newUID);
+        }
+      });
+    }
+
+    window.onload = function() {
+      listenToUID();  // aktifkan listener saat halaman dibuka
+    };
   </script>
 </head>
 <body>
@@ -154,20 +169,6 @@
       const uid = document.getElementById("uidSimulasi").value;
       if (uid) handleScan(uid);
     }
-
-    // Ambil UID dari URL dan langsung scan
-    function getURLParameter(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-
-    window.onload = function() {
-      const uidFromURL = getURLParameter("uid");
-      if (uidFromURL) {
-        document.getElementById("uidSimulasi").value = uidFromURL;
-        simulateScan();
-      }
-    };
   </script>
 </body>
 </html>
