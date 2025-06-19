@@ -26,24 +26,30 @@
       measurementId: "G-W9ZKL0Y6KX"
     };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     let lastUID = "";
 
-    // Listener Firebase untuk UID terbaru
+    // Listener otomatis Firebase
     function listenToUID() {
-      db.ref("last_uid").on("value", (snapshot) => {
+      db.ref("last_uid").on("value", async (snapshot) => {
         const newUID = snapshot.val();
         if (newUID && newUID !== lastUID) {
           lastUID = newUID;
           console.log("📡 UID baru dari Firebase:", newUID);
           document.getElementById("uidSimulasi").value = newUID;
+          await handleScan(newUID);
+          resetUID();
         }
       });
     }
 
-    window.onload = function() {
+    // Reset nilai UID agar tidak otomatis trigger ulang
+    function resetUID() {
+      db.ref("last_uid").set("");
+    }
+
+    window.onload = function () {
       listenToUID();
     };
   </script>
@@ -170,9 +176,7 @@
       });
 
       await fetch(scriptURL, { method: "POST", body });
-
       await fetch(`${scriptURL}?action=setoff&rfid=${rfid}`);
-
       alert("Barang keluar berhasil disimpan dan LED dimatikan.");
       location.reload();
     }
